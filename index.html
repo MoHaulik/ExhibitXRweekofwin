@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>WebXR ExhibitXR - Boundless</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.150.1/build/three.module.js"
+    }
+  }
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      overflow: hidden;
+      background: url('baggrund2.webp') center/cover;
+    }
+
+    .landing-page {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .background-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('baggrund.webp') center/cover;
+      z-index: -1;
+    }
+
+    .landing-overlay {
+      background: white;
+      padding: 40px 50px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      max-width: 480px;
+    }
+
+    .landing-title {
+      color: #1a1a1a;
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      letter-spacing: -0.05em;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .landing-subtitle {
+      color: #666;
+      font-size: 1.2rem;
+      font-weight: 400;
+      margin-bottom: 40px;
+      letter-spacing: -0.01em;
+    }
+
+    .build-exhibit-btn {
+      background: #5B6D92;
+      color: white;
+      border: none;
+      padding: 20px 50px;
+      font-size: 1.4rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .build-exhibit-btn:hover {
+      background: #4a5a7a;
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(91, 109, 146, 0.4);
+    }
+
+    .build-exhibit-btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .xr-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url('baggrund2.webp') center/cover;
+      z-index: -2;
+      display: none;
+    }
+
+    .xr-active body {
+      background: url('baggrund2.webp') center/cover;
+    }
+
+    .controls-panel {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: none;
+      align-items: center;
+      gap: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(20px);
+      border-radius: 25px;
+      padding: 15px 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      z-index: 1000;
+    }
+
+    .control-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      color: white;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .add-btn {
+      background: linear-gradient(45deg, #4CAF50, #45a049);
+    }
+
+    .add-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
+    }
+
+    .remove-btn {
+      background: linear-gradient(45deg, #f44336, #d32f2f);
+    }
+
+    .remove-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(244, 67, 54, 0.4);
+    }
+
+    .saved-btn {
+      background: linear-gradient(45deg, #2196F3, #1976D2);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .saved-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(33, 150, 243, 0.4);
+    }
+
+    .close-btn {
+      background: linear-gradient(45deg, #9E9E9E, #757575);
+    }
+
+    .close-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(158, 158, 158, 0.4);
+    }
+
+    .xr-active .landing-page {
+      display: none;
+    }
+
+    .xr-active .controls-panel {
+      display: flex;
+    }
+
+    .xr-active .xr-background {
+      display: block;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .status-message {
+      position: fixed;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 16px;
+      z-index: 1001;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+      display: none;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
+    }
+
+    .remove-mode .status-message {
+      background: rgba(244, 67, 54, 0.9);
+    }
+
+    @media (max-width: 768px) {
+      .landing-title {
+        font-size: 2rem;
+      }
+      
+      .landing-overlay {
+        padding: 40px 20px;
+        margin: 20px;
+      }
+      
+      .controls-panel {
+        gap: 15px;
+        padding: 12px 20px;
+      }
+      
+      .control-btn {
+        width: 50px;
+        height: 50px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- XR Background (shown in XR mode) -->
+  <div class="xr-background" id="xr-background"></div>
+
+  <!-- Landing Page -->
+  <div class="landing-page" id="landing-page">
+    <div class="background-image"></div>
+    <div class="landing-overlay">
+      <h1 class="landing-title">ExhibitXR</h1>
+      <p class="landing-subtitle">Create boundless AR experiences with your 3D models</p>
+      <button class="build-exhibit-btn" id="build-exhibit-btn">Add First Model</button>
+    </div>
+  </div>
+
+  <!-- Controls Panel (shown in XR) -->
+  <div class="controls-panel" id="controls-panel">
+    <button class="control-btn add-btn" id="add-btn" title="Add Model">+</button>
+    <button class="control-btn remove-btn" id="remove-btn" title="Remove Model">−</button>
+    <button class="control-btn saved-btn" id="saved-btn" title="Saved">SAVED</button>
+    <button class="control-btn close-btn" id="close-btn" title="Close AR">×</button>
+  </div>
+
+  <!-- Status Message -->
+  <div class="status-message" id="status-message"></div>
+
+  <!-- Hidden File Input -->
+  <input type="file" class="file-input" id="file-input" accept=".obj,.glb,.gltf">
+
+  <script type="module">
+    import * as THREE from 'three';
+    import { ARButton } from 'https://unpkg.com/three@0.150.1/examples/jsm/webxr/ARButton.js';
+    import { OBJLoader } from 'https://unpkg.com/three@0.150.1/examples/jsm/loaders/OBJLoader.js';
+    import { GLTFLoader } from 'https://unpkg.com/three@0.150.1/examples/jsm/loaders/GLTFLoader.js';
+
+    let camera, scene, renderer;
+    let controllers = [];
+    let models = [];
+    let xrSession = null;
+    let referenceSpace = null;
+    let interactionMode = 'none';
+    let activeControllers = new Set();
+    let selectedModel = null;
+    let removeMode = false;
+    let initialControllerPositions = {};
+    let initialDistance = 0;
+    let initialScale = new THREE.Vector3();
+    let initialRotation = 0;
+    let hasModels = false;
+    let isFirstModel = true;
+    
+    init();
+
+    function init() {
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.xr.enabled = true;
+      renderer.setClearColor(0x000000, 0);
+      renderer.shadowMap.enabled = true;
+      document.body.appendChild(renderer.domElement);
+
+      setupLights();
+      setupEventListeners();
+      
+      window.addEventListener('resize', onWindowResize);
+    }
+
+    function setupLights() {
+      const ambientLight = new THREE.AmbientLight(0x404040, 2);
+      scene.add(ambientLight);
+
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
+      directionalLight.position.set(1, 1, 1);
+      directionalLight.castShadow = true;
+      scene.add(directionalLight);
+    }
+
+    function setupEventListeners() {
+      document.getElementById('build-exhibit-btn').addEventListener('click', () => {
+        if (hasModels) {
+          startARSession();
+        } else {
+          document.getElementById('file-input').click();
+        }
+      });
+      
+      document.getElementById('add-btn').addEventListener('click', () => {
+        document.getElementById('file-input').click();
+      });
+      
+      document.getElementById('remove-btn').addEventListener('click', toggleRemoveMode);
+      document.getElementById('close-btn').addEventListener('click', endARSession);
+      document.getElementById('file-input').addEventListener('change', handleFileSelect);
+    }
+
+    function showStatus(message, isError = false) {
+      const statusEl = document.getElementById('status-message');
+      statusEl.textContent = message;
+      statusEl.style.display = 'block';
+      
+      if (isError) {
+        statusEl.style.background = 'rgba(244, 67, 54, 0.9)';
+      } else {
+        statusEl.style.background = 'rgba(0, 0, 0, 0.8)';
+      }
+      
+      setTimeout(() => {
+        statusEl.style.display = 'none';
+      }, 3000);
+    }
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    function startARSession() {
+      if (!navigator.xr) {
+        showStatus('WebXR is not supported in this browser.', true);
+        return;
+      }
+      
+      navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
+        if (supported) {
+          // Request boundless AR session with unbounded reference space
+          const sessionInit = { 
+            requiredFeatures: ['local-floor'],
+            optionalFeatures: ['unbounded', 'dom-overlay', 'hand-tracking'], 
+            domOverlay: { root: document.body } 
+          };
+          
+          navigator.xr.requestSession('immersive-ar', sessionInit).then(onSessionStarted);
+        } else {
+          showStatus('WebXR AR is not supported on this device.', true);
+        }
+      });
+    }
+
+    async function onSessionStarted(session) {
+      xrSession = session;
+      
+      document.body.classList.add('xr-active');
+      
+      // Try to get unbounded reference space for boundless experience
+      try {
+        referenceSpace = await session.requestReferenceSpace('unbounded');
+        showStatus('Boundless AR mode active! Walk freely in your space.');
+      } catch (error) {
+        console.log('Unbounded reference space not available, falling back to local-floor');
+        try {
+          referenceSpace = await session.requestReferenceSpace('local-floor');
+          showStatus('AR mode active with floor tracking.');
+        } catch (error2) {
+          console.log('Local-floor not available, using local');
+          referenceSpace = await session.requestReferenceSpace('local');
+          showStatus('AR mode active.');
+        }
+      }
+      
+      renderer.xr.setReferenceSpace(referenceSpace);
+      renderer.xr.setSession(session);
+      
+      setupControllers(session);
+      renderer.setAnimationLoop(render);
+      
+      session.addEventListener('end', onSessionEnd);
+    }
+    
+    function endARSession() {
+      if (xrSession) {
+        xrSession.end();
+      }
+    }
+    
+    function onSessionEnd() {
+      document.body.classList.remove('xr-active');
+      
+      // Don't clear models - keep them for next session
+      controllers = [];
+      activeControllers.clear();
+      selectedModel = null;
+      removeMode = false;
+      interactionMode = 'none';
+      referenceSpace = null;
+      
+      renderer.setAnimationLoop(null);
+      xrSession = null;
+      
+      // Only remove controllers from scene, keep models
+      while(scene.children.length > 0) { 
+        const object = scene.children[0];
+        if (object.userData && object.userData.isInteractable) {
+          // Keep models
+          break;
+        }
+        scene.remove(object);
+      }
+      
+      setupLights();
+    }
+
+    function setupControllers(session) {
+      for (let i = 0; i < 2; i++) {
+        const controller = renderer.xr.getController(i);
+        controller.userData.id = i;
+        scene.add(controller);
+        
+        controller.addEventListener('selectstart', onSelectStart);
+        controller.addEventListener('selectend', onSelectEnd);
+        
+        controllers.push(controller);
+      }
+    }
+    
+    function onSelectStart(event) {
+      const controller = event.target;
+      const controllerPos = new THREE.Vector3();
+      controller.getWorldPosition(controllerPos);
+      
+      activeControllers.add(controller.userData.id);
+      
+      if (removeMode) {
+        const modelToRemove = findNearestModel(controllerPos);
+        if (modelToRemove) {
+          removeModel(modelToRemove);
+          return;
+        }
+      }
+      
+      if (interactionMode === 'none') {
+        const nearestModel = findNearestModel(controllerPos);
+        if (nearestModel) {
+          selectedModel = nearestModel;
+          interactionMode = 'move';
+          highlightModel(nearestModel, true);
+          
+          // Store the offset from controller to model
+          selectedModel.userData.grabOffset = new THREE.Vector3().subVectors(
+            selectedModel.position, 
+            controllerPos
+          );
+          
+          showStatus('Moving model. Use both hands to scale/rotate.');
+        }
+      }
+      else if (interactionMode === 'move' && activeControllers.size === 2) {
+        // Transition to transform mode
+        interactionMode = 'transform';
+        
+        // Store positions of both controllers
+        controllers.forEach(ctrl => {
+          const pos = new THREE.Vector3();
+          ctrl.getWorldPosition(pos);
+          initialControllerPositions[ctrl.userData.id] = pos.clone();
+        });
+        
+        // Calculate initial values for transform operations
+        initialDistance = getControllerDistance();
+        initialScale.copy(selectedModel.scale);
+        
+        // Calculate initial angle between controllers
+        const leftPos = initialControllerPositions[0];
+        const rightPos = initialControllerPositions[1];
+        if (leftPos && rightPos) {
+          const vector = new THREE.Vector3().subVectors(rightPos, leftPos);
+          initialRotation = Math.atan2(vector.x, vector.z);
+        }
+        
+        showStatus('Transform mode: scale and rotate in boundless space!');
+      }
+    }
+    
+    function onSelectEnd(event) {
+      const controller = event.target;
+      activeControllers.delete(controller.userData.id);
+      
+      if (interactionMode === 'transform') {
+        if (activeControllers.size === 1) {
+          // Back to move mode with remaining controller
+          interactionMode = 'move';
+          
+          // Update grab offset for remaining controller
+          const remainingControllerId = Array.from(activeControllers)[0];
+          const remainingController = controllers[remainingControllerId];
+          const controllerPos = new THREE.Vector3();
+          remainingController.getWorldPosition(controllerPos);
+          
+          selectedModel.userData.grabOffset = new THREE.Vector3().subVectors(
+            selectedModel.position,
+            controllerPos
+          );
+          
+          showStatus('Back to move mode.');
+        }
+        else if (activeControllers.size === 0) {
+          resetInteraction();
+        }
+      }
+      else if (interactionMode === 'move' && activeControllers.size === 0) {
+        resetInteraction();
+      }
+    }
+    
+    function resetInteraction() {
+      if (selectedModel) {
+        highlightModel(selectedModel, false);
+        selectedModel.userData.grabOffset = null;
+      }
+      
+      interactionMode = 'none';
+      selectedModel = null;
+      activeControllers.clear();
+      initialControllerPositions = {};
+      
+      if (!removeMode) {
+        showStatus('Model anchored in space!');
+      }
+    }
+
+    function findNearestModel(position) {
+      let nearest = null;
+      let minDistance = 0.5; // Increased distance for boundless interaction
+      
+      models.forEach(model => {
+        const modelPos = new THREE.Vector3();
+        model.getWorldPosition(modelPos);
+        const distance = position.distanceTo(modelPos);
+        
+        if (distance < minDistance) {
+          minDistance = distance;
+          nearest = model;
+        }
+      });
+      
+      return nearest;
+    }
+
+    function highlightModel(model, isHighlighted) {
+      if (!model) return;
+      
+      model.traverse((child) => {
+        if (child.isMesh && child.material) {
+          if (isHighlighted) {
+            if (!child.material._originalEmissive) {
+              child.material._originalEmissive = child.material.emissive ? 
+                child.material.emissive.clone() : new THREE.Color(0x000000);
+            }
+            child.material.emissive = new THREE.Color(removeMode ? 0xff0000 : 0x0088ff);
+            child.material.emissiveIntensity = 0.5;
+          } else if (child.material._originalEmissive) {
+            child.material.emissive.copy(child.material._originalEmissive);
+            child.material.emissiveIntensity = 0;
+          }
+        }
+      });
+    }
+
+    function toggleRemoveMode() {
+      removeMode = !removeMode;
+      const removeBtn = document.getElementById('remove-btn');
+      
+      if (removeMode) {
+        removeBtn.style.background = 'linear-gradient(45deg, #ff1744, #d50000)';
+        document.body.classList.add('remove-mode');
+        showStatus('Remove mode: Point and squeeze to delete models');
+        
+        models.forEach(model => highlightModel(model, true));
+      } else {
+        removeBtn.style.background = 'linear-gradient(45deg, #f44336, #d32f2f)';
+        document.body.classList.remove('remove-mode');
+        showStatus('Remove mode disabled');
+        
+        models.forEach(model => highlightModel(model, false));
+      }
+    }
+
+    function removeModel(model) {
+      const index = models.indexOf(model);
+      if (index > -1) {
+        models.splice(index, 1);
+        scene.remove(model);
+        
+        model.traverse((child) => {
+          if (child.geometry) child.geometry.dispose();
+          if (child.material) {
+            if (Array.isArray(child.material)) {
+              child.material.forEach(material => material.dispose());
+            } else {
+              child.material.dispose();
+            }
+          }
+        });
+        
+        hasModels = models.length > 0;
+        updateButtonState();
+        
+        showStatus('Model removed!');
+      }
+    }
+
+    function updateButtonState() {
+      const btn = document.getElementById('build-exhibit-btn');
+      if (hasModels) {
+        btn.textContent = 'Launch Boundless AR';
+        btn.disabled = false;
+      } else {
+        btn.textContent = 'Add First Model';
+        btn.disabled = false;
+      }
+    }
+
+    function handleFileSelect(event) {
+      if (event.target.files.length > 0) {
+        const file = event.target.files[0];
+        const fileURL = URL.createObjectURL(file);
+        const fileType = file.name.toLowerCase().split('.').pop();
+        
+        showStatus(`Loading ${file.name}...`);
+        
+        if (fileType === 'obj') {
+          loadOBJModel(fileURL, file.name);
+        } else if (fileType === 'glb' || fileType === 'gltf') {
+          loadGLBModel(fileURL, file.name);
+        } else {
+          showStatus('Unsupported file type. Use OBJ or GLB/GLTF.', true);
+        }
+      }
+    }
+
+    function loadOBJModel(url, filename) {
+      const objLoader = new OBJLoader();
+      
+      objLoader.load(
+        url,
+        (object) => {
+          processLoadedModel(object, filename);
+          URL.revokeObjectURL(url);
+        },
+        undefined,
+        (error) => {
+          console.error('Error loading OBJ:', error);
+          showStatus('Failed to load model.', true);
+          URL.revokeObjectURL(url);
+        }
+      );
+    }
+
+    function loadGLBModel(url, filename) {
+      const gltfLoader = new GLTFLoader();
+      
+      gltfLoader.load(
+        url,
+        (gltf) => {
+          processLoadedModel(gltf.scene, filename);
+          URL.revokeObjectURL(url);
+        },
+        undefined,
+        (error) => {
+          console.error('Error loading GLB/GLTF:', error);
+          showStatus('Failed to load model.', true);
+          URL.revokeObjectURL(url);
+        }
+      );
+    }
+
+    function processLoadedModel(object, filename) {
+      object.userData.isInteractable = true;
+      object.userData.filename = filename;
+      object.userData.originalRotation = new THREE.Euler();
+      object.userData.grabOffset = null;
+      
+      object.traverse((child) => {
+        if (child.isMesh) {
+          if (!child.material) {
+            child.material = new THREE.MeshStandardMaterial({
+              color: 0x888888,
+              roughness: 0.5,
+              metalness: 0.5
+            });
+          }
+          
+          child.material.transparent = true;
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+      
+      // Scale and position
+      const box = new THREE.Box3().setFromObject(object);
+      const size = box.getSize(new THREE.Vector3());
+      const maxDimension = Math.max(size.x, size.y, size.z);
+      const scale = 0.4 / maxDimension; // Slightly larger for boundless space
+      object.scale.setScalar(scale);
+      
+      // Center the object properly
+      const center = box.getCenter(new THREE.Vector3());
+      object.position.sub(center.multiplyScalar(scale));
+      
+      // Position models in a wider spread for boundless space
+      const angle = (models.length * Math.PI * 2) / 8;
+      const radius = 2.5; // Increased radius for boundless experience
+      object.position.set(
+        Math.sin(angle) * radius,
+        0,
+        -Math.cos(angle) * radius - 2
+      );
+      
+      // Store original rotation
+      object.userData.originalRotation.copy(object.rotation);
+      
+      scene.add(object);
+      models.push(object);
+      
+      hasModels = true;
+      updateButtonState();
+      
+      showStatus(`${filename} loaded! ${models.length} models in boundless space.`);
+      
+      // Auto-launch AR for first model
+      if (isFirstModel) {
+        isFirstModel = false;
+        setTimeout(() => {
+          startARSession();
+        }, 1000);
+      }
+    }
+
+    function getControllerDistance() {
+      if (controllers.length < 2) return 0;
+      
+      const leftPos = new THREE.Vector3();
+      const rightPos = new THREE.Vector3();
+      
+      controllers[0].getWorldPosition(leftPos);
+      controllers[1].getWorldPosition(rightPos);
+      
+      return leftPos.distanceTo(rightPos);
+    }
+    
+    function handleObjectInteraction() {
+      if (!selectedModel) return;
+      
+      // Handle move with single controller
+      if (interactionMode === 'move' && activeControllers.size === 1) {
+        const controllerId = Array.from(activeControllers)[0];
+        const controller = controllers[controllerId];
+        
+        const controllerPos = new THREE.Vector3();
+        controller.getWorldPosition(controllerPos);
+        
+        // Move object with controller using grab offset
+        if (selectedModel.userData.grabOffset) {
+          selectedModel.position.copy(controllerPos).add(selectedModel.userData.grabOffset);
+        }
+      }
+      
+      // Handle transform with two controllers
+      else if (interactionMode === 'transform' && activeControllers.size === 2) {
+        const currentPositions = [];
+        controllers.forEach(controller => {
+          const pos = new THREE.Vector3();
+          controller.getWorldPosition(pos);
+          currentPositions[controller.userData.id] = pos;
+        });
+        
+        const currentDistance = getControllerDistance();
+        
+        // Scale object based on distance change
+        if (initialDistance > 0) {
+          let scaleFactor = currentDistance / initialDistance;
+          scaleFactor = Math.max(0.05, Math.min(scaleFactor, 10.0)); // Increased scale range for boundless space
+          selectedModel.scale.copy(initialScale).multiplyScalar(scaleFactor);
+        }
+        
+        // Handle rotation and positioning
+        const leftPos = currentPositions[0];
+        const rightPos = currentPositions[1];
+        
+        if (leftPos && rightPos) {
+          const vector = new THREE.Vector3().subVectors(rightPos, leftPos);
+          const currentAngle = Math.atan2(vector.x, vector.z);
+          const rotationDelta = currentAngle - initialRotation;
+          selectedModel.rotation.y = selectedModel.userData.originalRotation.y + rotationDelta;
+          
+          // Position at midpoint between controllers
+          const midpoint = new THREE.Vector3().addVectors(leftPos, rightPos).multiplyScalar(0.5);
+          selectedModel.position.copy(midpoint);
+        }
+      }
+    }
+    
+    function render(timestamp, frame) {
+      if (frame && selectedModel && interactionMode !== 'none') {
+        handleObjectInteraction();
+      }
+      
+      renderer.render(scene, camera);
+    }
+  </script>
+</body>
+</html>
