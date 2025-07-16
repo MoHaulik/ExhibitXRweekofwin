@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>WebXR ExhibitXR - Enhanced</title>
+  <title>WebXR ExhibitXR - Boundless</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -27,7 +27,7 @@
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       overflow: hidden;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: url('baggrund2.webp') center/cover;
     }
 
     .landing-page {
@@ -44,13 +44,22 @@
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
 
+    .background-image {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('baggrund.webp') center/cover;
+      z-index: -1;
+    }
+
     .landing-overlay {
       background: white;
       padding: 40px 50px;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
       max-width: 480px;
-      border-radius: 10px;
     }
 
     .landing-title {
@@ -59,6 +68,7 @@
       font-weight: 700;
       margin-bottom: 20px;
       letter-spacing: -0.05em;
+      font-family: 'Inter', sans-serif;
     }
 
     .landing-subtitle {
@@ -69,37 +79,46 @@
       letter-spacing: -0.01em;
     }
 
-    .button-group {
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .action-btn {
+    .build-exhibit-btn {
       background: #5B6D92;
       color: white;
       border: none;
-      padding: 15px 30px;
-      font-size: 1.1rem;
+      padding: 20px 50px;
+      font-size: 1.4rem;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      border-radius: 5px;
       text-transform: uppercase;
       letter-spacing: 1px;
+      font-family: 'Inter', sans-serif;
     }
 
-    .action-btn:hover {
+    .build-exhibit-btn:hover {
       background: #4a5a7a;
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(91, 109, 146, 0.4);
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(91, 109, 146, 0.4);
     }
 
-    .action-btn:disabled {
+    .build-exhibit-btn:disabled {
       background: #ccc;
       cursor: not-allowed;
       transform: none;
+      box-shadow: none;
+    }
+
+    .xr-background {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: url('baggrund2.webp') center/cover;
+      z-index: -2;
+      display: none;
+    }
+
+    .xr-active body {
+      background: url('baggrund2.webp') center/cover;
     }
 
     .controls-panel {
@@ -109,44 +128,86 @@
       transform: translateX(-50%);
       display: none;
       align-items: center;
-      gap: 15px;
+      gap: 20px;
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(20px);
       border-radius: 25px;
-      padding: 12px 25px;
+      padding: 15px 30px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
       border: 1px solid rgba(255, 255, 255, 0.2);
       z-index: 1000;
     }
 
     .control-btn {
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       border: none;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 24px;
       font-weight: bold;
       transition: all 0.3s ease;
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
       color: white;
+      font-family: 'Inter', sans-serif;
     }
 
-    .add-btn { background: linear-gradient(45deg, #4CAF50, #45a049); }
-    .remove-btn { background: linear-gradient(45deg, #f44336, #d32f2f); }
-    .save-btn { background: linear-gradient(45deg, #2196F3, #1976D2); font-size: 12px; }
-    .close-btn { background: linear-gradient(45deg, #9E9E9E, #757575); }
+    .add-btn {
+      background: linear-gradient(45deg, #4CAF50, #45a049);
+    }
 
-    .control-btn:hover {
+    .add-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 8px 20px rgba(76, 175, 80, 0.4);
     }
 
-    .xr-active .landing-page { display: none; }
-    .xr-active .controls-panel { display: flex; }
+    .remove-btn {
+      background: linear-gradient(45deg, #f44336, #d32f2f);
+    }
+
+    .remove-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(244, 67, 54, 0.4);
+    }
+
+    .saved-btn {
+      background: linear-gradient(45deg, #2196F3, #1976D2);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .saved-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(33, 150, 243, 0.4);
+    }
+
+    .close-btn {
+      background: linear-gradient(45deg, #9E9E9E, #757575);
+    }
+
+    .close-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(158, 158, 158, 0.4);
+    }
+
+    .xr-active .landing-page {
+      display: none;
+    }
+
+    .xr-active .controls-panel {
+      display: flex;
+    }
+
+    .xr-active .xr-background {
+      display: block;
+    }
+
+    .file-input {
+      display: none;
+    }
 
     .status-message {
       position: fixed;
@@ -155,50 +216,72 @@
       transform: translateX(-50%);
       background: rgba(0, 0, 0, 0.8);
       color: white;
-      padding: 12px 25px;
-      border-radius: 20px;
-      font-size: 14px;
+      padding: 15px 30px;
+      border-radius: 25px;
+      font-size: 16px;
       z-index: 1001;
       backdrop-filter: blur(10px);
       box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
       display: none;
       border: 1px solid rgba(255, 255, 255, 0.1);
-      max-width: 80vw;
-      text-align: center;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
     }
 
-    .file-input { display: none; }
-    
     .remove-mode .status-message {
       background: rgba(244, 67, 54, 0.9);
+    }
+
+    @media (max-width: 768px) {
+      .landing-title {
+        font-size: 2rem;
+      }
+      
+      .landing-overlay {
+        padding: 40px 20px;
+        margin: 20px;
+      }
+      
+      .controls-panel {
+        gap: 15px;
+        padding: 12px 20px;
+      }
+      
+      .control-btn {
+        width: 50px;
+        height: 50px;
+      }
     }
   </style>
 </head>
 <body>
+  <!-- XR Background (shown in XR mode) -->
+  <div class="xr-background" id="xr-background"></div>
+
+  <!-- Landing Page -->
   <div class="landing-page" id="landing-page">
+    <div class="background-image"></div>
     <div class="landing-overlay">
       <h1 class="landing-title">ExhibitXR</h1>
-      <p class="landing-subtitle">Create boundless AR experiences</p>
-      <div class="button-group">
-        <button class="action-btn" id="add-model-btn">Add Model</button>
-        <button class="action-btn" id="load-btn">Load Exhibit</button>
-        <button class="action-btn" id="launch-btn" disabled>Launch AR</button>
-      </div>
+      <p class="landing-subtitle">Create boundless AR experiences with your 3D models</p>
+      <button class="build-exhibit-btn" id="build-exhibit-btn">Add First Model</button>
     </div>
   </div>
 
+  <!-- Controls Panel (shown in XR) -->
   <div class="controls-panel" id="controls-panel">
     <button class="control-btn add-btn" id="add-btn" title="Add Model">+</button>
     <button class="control-btn remove-btn" id="remove-btn" title="Remove Model">−</button>
-    <button class="control-btn save-btn" id="save-btn" title="Save Exhibit">💾</button>
+    <button class="control-btn saved-btn" id="saved-btn" title="Saved">SAVED</button>
     <button class="control-btn close-btn" id="close-btn" title="Close AR">×</button>
   </div>
 
+  <!-- Status Message -->
   <div class="status-message" id="status-message"></div>
-  <input type="file" class="file-input" id="file-input" accept=".obj,.glb,.gltf">
-  <input type="file" class="file-input" id="load-input" accept=".zip">
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <!-- Hidden File Input -->
+  <input type="file" class="file-input" id="file-input" accept=".obj,.glb,.gltf">
+
   <script type="module">
     import * as THREE from 'three';
     import { ARButton } from 'https://unpkg.com/three@0.150.1/examples/jsm/webxr/ARButton.js';
@@ -219,61 +302,69 @@
     let initialScale = new THREE.Vector3();
     let initialRotation = 0;
     let hasModels = false;
-    let userReferencePosition = new THREE.Vector3();
-    let savedModels = [];
-    let smoothingFactor = 0.1;
+    let isFirstModel = true;
     
     init();
 
     function init() {
       scene = new THREE.Scene();
       camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+
       renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.xr.enabled = true;
       renderer.setClearColor(0x000000, 0);
+      renderer.shadowMap.enabled = true;
       document.body.appendChild(renderer.domElement);
 
       setupLights();
       setupEventListeners();
+      
       window.addEventListener('resize', onWindowResize);
     }
 
     function setupLights() {
       const ambientLight = new THREE.AmbientLight(0x404040, 2);
       scene.add(ambientLight);
+
       const directionalLight = new THREE.DirectionalLight(0xffffff, 1.5);
       directionalLight.position.set(1, 1, 1);
+      directionalLight.castShadow = true;
       scene.add(directionalLight);
     }
 
     function setupEventListeners() {
-      document.getElementById('add-model-btn').addEventListener('click', () => {
-        document.getElementById('file-input').click();
+      document.getElementById('build-exhibit-btn').addEventListener('click', () => {
+        if (hasModels) {
+          startARSession();
+        } else {
+          document.getElementById('file-input').click();
+        }
       });
       
-      document.getElementById('load-btn').addEventListener('click', () => {
-        document.getElementById('load-input').click();
-      });
-      
-      document.getElementById('launch-btn').addEventListener('click', startARSession);
       document.getElementById('add-btn').addEventListener('click', () => {
         document.getElementById('file-input').click();
       });
       
       document.getElementById('remove-btn').addEventListener('click', toggleRemoveMode);
-      document.getElementById('save-btn').addEventListener('click', saveExhibit);
       document.getElementById('close-btn').addEventListener('click', endARSession);
       document.getElementById('file-input').addEventListener('change', handleFileSelect);
-      document.getElementById('load-input').addEventListener('change', handleLoadSelect);
     }
 
     function showStatus(message, isError = false) {
       const statusEl = document.getElementById('status-message');
       statusEl.textContent = message;
       statusEl.style.display = 'block';
-      statusEl.style.background = isError ? 'rgba(244, 67, 54, 0.9)' : 'rgba(0, 0, 0, 0.8)';
-      setTimeout(() => statusEl.style.display = 'none', 3000);
+      
+      if (isError) {
+        statusEl.style.background = 'rgba(244, 67, 54, 0.9)';
+      } else {
+        statusEl.style.background = 'rgba(0, 0, 0, 0.8)';
+      }
+      
+      setTimeout(() => {
+        statusEl.style.display = 'none';
+      }, 3000);
     }
 
     function onWindowResize() {
@@ -284,76 +375,86 @@
 
     function startARSession() {
       if (!navigator.xr) {
-        showStatus('WebXR not supported', true);
+        showStatus('WebXR is not supported in this browser.', true);
         return;
       }
       
       navigator.xr.isSessionSupported('immersive-ar').then((supported) => {
         if (supported) {
+          // Request boundless AR session with unbounded reference space
           const sessionInit = { 
             requiredFeatures: ['local-floor'],
-            optionalFeatures: ['unbounded', 'dom-overlay'], 
+            optionalFeatures: ['unbounded', 'dom-overlay', 'hand-tracking'], 
             domOverlay: { root: document.body } 
           };
           
           navigator.xr.requestSession('immersive-ar', sessionInit).then(onSessionStarted);
         } else {
-          showStatus('WebXR AR not supported', true);
+          showStatus('WebXR AR is not supported on this device.', true);
         }
       });
     }
 
     async function onSessionStarted(session) {
       xrSession = session;
+      
       document.body.classList.add('xr-active');
       
+      // Try to get unbounded reference space for boundless experience
       try {
         referenceSpace = await session.requestReferenceSpace('unbounded');
-        showStatus('Boundless AR active! Remember your position for saving.');
+        showStatus('Boundless AR mode active! Walk freely in your space.');
       } catch (error) {
+        console.log('Unbounded reference space not available, falling back to local-floor');
         try {
           referenceSpace = await session.requestReferenceSpace('local-floor');
-          showStatus('AR active with floor tracking.');
+          showStatus('AR mode active with floor tracking.');
         } catch (error2) {
+          console.log('Local-floor not available, using local');
           referenceSpace = await session.requestReferenceSpace('local');
-          showStatus('AR active.');
+          showStatus('AR mode active.');
         }
       }
       
       renderer.xr.setReferenceSpace(referenceSpace);
       renderer.xr.setSession(session);
       
-      // Store user reference position
-      const frame = await session.requestAnimationFrame(() => {});
-      if (frame) {
-        const viewerPose = frame.getViewerPose(referenceSpace);
-        if (viewerPose) {
-          userReferencePosition.copy(viewerPose.transform.position);
-        }
-      }
-      
       setupControllers(session);
       renderer.setAnimationLoop(render);
+      
       session.addEventListener('end', onSessionEnd);
     }
     
     function endARSession() {
-      if (xrSession) xrSession.end();
+      if (xrSession) {
+        xrSession.end();
+      }
     }
     
     function onSessionEnd() {
       document.body.classList.remove('xr-active');
+      
+      // Don't clear models - keep them for next session
       controllers = [];
       activeControllers.clear();
       selectedModel = null;
       removeMode = false;
       interactionMode = 'none';
       referenceSpace = null;
+      
       renderer.setAnimationLoop(null);
       xrSession = null;
       
-      // Don't remove models from scene - keep them for next session
-      // Only reset lights
+      // Only remove controllers from scene, keep models
+      while(scene.children.length > 0) { 
+        const object = scene.children[0];
+        if (object.userData && object.userData.isInteractable) {
+          // Keep models
+          break;
+        }
+        scene.remove(object);
+      }
+      
       setupLights();
     }
 
@@ -392,32 +493,31 @@
           interactionMode = 'move';
           highlightModel(nearestModel, true);
           
-          // Smoother grab offset calculation
+          // Store the offset from controller to model
           selectedModel.userData.grabOffset = new THREE.Vector3().subVectors(
             selectedModel.position, 
             controllerPos
           );
           
-          // Store initial values for smooth interaction
-          selectedModel.userData.targetPosition = selectedModel.position.clone();
-          selectedModel.userData.targetRotation = selectedModel.rotation.clone();
-          selectedModel.userData.targetScale = selectedModel.scale.clone();
-          
-          showStatus('Grabbed! Use both hands to scale/rotate smoothly.');
+          showStatus('Moving model. Use both hands to scale/rotate.');
         }
       }
       else if (interactionMode === 'move' && activeControllers.size === 2) {
+        // Transition to transform mode
         interactionMode = 'transform';
         
+        // Store positions of both controllers
         controllers.forEach(ctrl => {
           const pos = new THREE.Vector3();
           ctrl.getWorldPosition(pos);
           initialControllerPositions[ctrl.userData.id] = pos.clone();
         });
         
+        // Calculate initial values for transform operations
         initialDistance = getControllerDistance();
         initialScale.copy(selectedModel.scale);
         
+        // Calculate initial angle between controllers
         const leftPos = initialControllerPositions[0];
         const rightPos = initialControllerPositions[1];
         if (leftPos && rightPos) {
@@ -425,7 +525,7 @@
           initialRotation = Math.atan2(vector.x, vector.z);
         }
         
-        showStatus('Transform mode: Scale and rotate smoothly!');
+        showStatus('Transform mode: scale and rotate in boundless space!');
       }
     }
     
@@ -435,7 +535,10 @@
       
       if (interactionMode === 'transform') {
         if (activeControllers.size === 1) {
+          // Back to move mode with remaining controller
           interactionMode = 'move';
+          
+          // Update grab offset for remaining controller
           const remainingControllerId = Array.from(activeControllers)[0];
           const remainingController = controllers[remainingControllerId];
           const controllerPos = new THREE.Vector3();
@@ -461,23 +564,21 @@
       if (selectedModel) {
         highlightModel(selectedModel, false);
         selectedModel.userData.grabOffset = null;
-        
-        // Save final position to prevent drift
-        selectedModel.userData.anchoredPosition = selectedModel.position.clone();
-        selectedModel.userData.anchoredRotation = selectedModel.rotation.clone();
-        selectedModel.userData.anchoredScale = selectedModel.scale.clone();
       }
       
       interactionMode = 'none';
       selectedModel = null;
       activeControllers.clear();
       initialControllerPositions = {};
-      showStatus('Model anchored - position saved!');
+      
+      if (!removeMode) {
+        showStatus('Model anchored in space!');
+      }
     }
 
     function findNearestModel(position) {
       let nearest = null;
-      let minDistance = 0.3;
+      let minDistance = 0.5; // Increased distance for boundless interaction
       
       models.forEach(model => {
         const modelPos = new THREE.Vector3();
@@ -503,8 +604,8 @@
               child.material._originalEmissive = child.material.emissive ? 
                 child.material.emissive.clone() : new THREE.Color(0x000000);
             }
-            child.material.emissive = new THREE.Color(removeMode ? 0xff0000 : 0x00ff88);
-            child.material.emissiveIntensity = 0.3;
+            child.material.emissive = new THREE.Color(removeMode ? 0xff0000 : 0x0088ff);
+            child.material.emissiveIntensity = 0.5;
           } else if (child.material._originalEmissive) {
             child.material.emissive.copy(child.material._originalEmissive);
             child.material.emissiveIntensity = 0;
@@ -520,12 +621,14 @@
       if (removeMode) {
         removeBtn.style.background = 'linear-gradient(45deg, #ff1744, #d50000)';
         document.body.classList.add('remove-mode');
-        showStatus('Remove mode: Point and squeeze to delete');
+        showStatus('Remove mode: Point and squeeze to delete models');
+        
         models.forEach(model => highlightModel(model, true));
       } else {
         removeBtn.style.background = 'linear-gradient(45deg, #f44336, #d32f2f)';
         document.body.classList.remove('remove-mode');
         showStatus('Remove mode disabled');
+        
         models.forEach(model => highlightModel(model, false));
       }
     }
@@ -549,14 +652,20 @@
         
         hasModels = models.length > 0;
         updateButtonState();
+        
         showStatus('Model removed!');
       }
     }
 
     function updateButtonState() {
-      const btn = document.getElementById('launch-btn');
-      btn.disabled = !hasModels;
-      btn.textContent = hasModels ? 'Launch AR' : 'Add Models First';
+      const btn = document.getElementById('build-exhibit-btn');
+      if (hasModels) {
+        btn.textContent = 'Launch Boundless AR';
+        btn.disabled = false;
+      } else {
+        btn.textContent = 'Add First Model';
+        btn.disabled = false;
+      }
     }
 
     function handleFileSelect(event) {
@@ -568,44 +677,56 @@
         showStatus(`Loading ${file.name}...`);
         
         if (fileType === 'obj') {
-          loadOBJModel(fileURL, file);
+          loadOBJModel(fileURL, file.name);
         } else if (fileType === 'glb' || fileType === 'gltf') {
-          loadGLBModel(fileURL, file);
+          loadGLBModel(fileURL, file.name);
         } else {
           showStatus('Unsupported file type. Use OBJ or GLB/GLTF.', true);
         }
       }
     }
 
-    function loadOBJModel(url, file) {
+    function loadOBJModel(url, filename) {
       const objLoader = new OBJLoader();
       
-      objLoader.load(url, (object) => {
-        processLoadedModel(object, file);
-        URL.revokeObjectURL(url);
-      }, undefined, (error) => {
-        showStatus('Failed to load OBJ model.', true);
-        URL.revokeObjectURL(url);
-      });
+      objLoader.load(
+        url,
+        (object) => {
+          processLoadedModel(object, filename);
+          URL.revokeObjectURL(url);
+        },
+        undefined,
+        (error) => {
+          console.error('Error loading OBJ:', error);
+          showStatus('Failed to load model.', true);
+          URL.revokeObjectURL(url);
+        }
+      );
     }
 
-    function loadGLBModel(url, file) {
+    function loadGLBModel(url, filename) {
       const gltfLoader = new GLTFLoader();
       
-      gltfLoader.load(url, (gltf) => {
-        processLoadedModel(gltf.scene, file);
-        URL.revokeObjectURL(url);
-      }, undefined, (error) => {
-        showStatus('Failed to load GLB/GLTF model.', true);
-        URL.revokeObjectURL(url);
-      });
+      gltfLoader.load(
+        url,
+        (gltf) => {
+          processLoadedModel(gltf.scene, filename);
+          URL.revokeObjectURL(url);
+        },
+        undefined,
+        (error) => {
+          console.error('Error loading GLB/GLTF:', error);
+          showStatus('Failed to load model.', true);
+          URL.revokeObjectURL(url);
+        }
+      );
     }
 
-    function processLoadedModel(object, file) {
+    function processLoadedModel(object, filename) {
       object.userData.isInteractable = true;
-      object.userData.filename = file.name;
-      object.userData.fileData = file;
+      object.userData.filename = filename;
       object.userData.originalRotation = new THREE.Euler();
+      object.userData.grabOffset = null;
       
       object.traverse((child) => {
         if (child.isMesh) {
@@ -613,42 +734,38 @@
             child.material = new THREE.MeshStandardMaterial({
               color: 0x888888,
               roughness: 0.5,
-              metalness: 0.3
+              metalness: 0.5
             });
           }
           
-          // Important for AR rendering
           child.material.transparent = true;
           child.castShadow = true;
           child.receiveShadow = true;
         }
       });
       
-      // Better scaling and positioning - closer to camera
+      // Scale and position
       const box = new THREE.Box3().setFromObject(object);
       const size = box.getSize(new THREE.Vector3());
       const maxDimension = Math.max(size.x, size.y, size.z);
-      const scale = 0.4 / maxDimension;
+      const scale = 0.4 / maxDimension; // Slightly larger for boundless space
       object.scale.setScalar(scale);
       
-      // Center object
+      // Center the object properly
       const center = box.getCenter(new THREE.Vector3());
       object.position.sub(center.multiplyScalar(scale));
       
-      // Position closer to camera in a manageable area
-      const angle = (models.length * Math.PI * 2) / 6;
-      const radius = 1.2; // Closer but not too close
+      // Position models in a wider spread for boundless space
+      const angle = (models.length * Math.PI * 2) / 8;
+      const radius = 2.5; // Increased radius for boundless experience
       object.position.set(
         Math.sin(angle) * radius,
-        0.2, // Slightly elevated
-        -Math.cos(angle) * radius - 1.5 // Closer to camera but visible
+        0,
+        -Math.cos(angle) * radius - 2
       );
       
-      // Store reference position for saving
+      // Store original rotation
       object.userData.originalRotation.copy(object.rotation);
-      object.userData.anchoredPosition = object.position.clone();
-      object.userData.anchoredRotation = object.rotation.clone();
-      object.userData.anchoredScale = object.scale.clone();
       
       scene.add(object);
       models.push(object);
@@ -656,7 +773,15 @@
       hasModels = true;
       updateButtonState();
       
-      showStatus(`${file.name} loaded! Models: ${models.length}`);
+      showStatus(`${filename} loaded! ${models.length} models in boundless space.`);
+      
+      // Auto-launch AR for first model
+      if (isFirstModel) {
+        isFirstModel = false;
+        setTimeout(() => {
+          startARSession();
+        }, 1000);
+      }
     }
 
     function getControllerDistance() {
@@ -674,7 +799,7 @@
     function handleObjectInteraction() {
       if (!selectedModel) return;
       
-      // Smooth single-hand movement
+      // Handle move with single controller
       if (interactionMode === 'move' && activeControllers.size === 1) {
         const controllerId = Array.from(activeControllers)[0];
         const controller = controllers[controllerId];
@@ -682,13 +807,13 @@
         const controllerPos = new THREE.Vector3();
         controller.getWorldPosition(controllerPos);
         
+        // Move object with controller using grab offset
         if (selectedModel.userData.grabOffset) {
-          const targetPos = new THREE.Vector3().copy(controllerPos).add(selectedModel.userData.grabOffset);
-          selectedModel.position.lerp(targetPos, smoothingFactor);
+          selectedModel.position.copy(controllerPos).add(selectedModel.userData.grabOffset);
         }
       }
       
-      // Smooth two-hand transform
+      // Handle transform with two controllers
       else if (interactionMode === 'transform' && activeControllers.size === 2) {
         const currentPositions = [];
         controllers.forEach(controller => {
@@ -699,15 +824,14 @@
         
         const currentDistance = getControllerDistance();
         
-        // Smooth scaling
+        // Scale object based on distance change
         if (initialDistance > 0) {
           let scaleFactor = currentDistance / initialDistance;
-          scaleFactor = Math.max(0.1, Math.min(scaleFactor, 5.0));
-          const targetScale = new THREE.Vector3().copy(initialScale).multiplyScalar(scaleFactor);
-          selectedModel.scale.lerp(targetScale, smoothingFactor);
+          scaleFactor = Math.max(0.05, Math.min(scaleFactor, 10.0)); // Increased scale range for boundless space
+          selectedModel.scale.copy(initialScale).multiplyScalar(scaleFactor);
         }
         
-        // Smooth rotation and positioning
+        // Handle rotation and positioning
         const leftPos = currentPositions[0];
         const rightPos = currentPositions[1];
         
@@ -715,186 +839,13 @@
           const vector = new THREE.Vector3().subVectors(rightPos, leftPos);
           const currentAngle = Math.atan2(vector.x, vector.z);
           const rotationDelta = currentAngle - initialRotation;
-          const targetRotation = selectedModel.userData.originalRotation.y + rotationDelta;
+          selectedModel.rotation.y = selectedModel.userData.originalRotation.y + rotationDelta;
           
-          selectedModel.rotation.y = THREE.MathUtils.lerp(selectedModel.rotation.y, targetRotation, smoothingFactor);
-          
-          // Smooth positioning at midpoint
+          // Position at midpoint between controllers
           const midpoint = new THREE.Vector3().addVectors(leftPos, rightPos).multiplyScalar(0.5);
-          selectedModel.position.lerp(midpoint, smoothingFactor);
+          selectedModel.position.copy(midpoint);
         }
       }
-    }
-
-    // Save/Load functionality
-    async function saveExhibit() {
-      if (models.length === 0) {
-        showStatus('No models to save!', true);
-        return;
-      }
-      
-      showStatus('Saving exhibit...');
-      
-      const zip = new JSZip();
-      const exhibitData = {
-        userPosition: userReferencePosition.toArray(),
-        models: []
-      };
-      
-      // Save each model and its data
-      for (let i = 0; i < models.length; i++) {
-        const model = models[i];
-        const modelData = {
-          filename: model.userData.filename,
-          position: model.position.toArray(),
-          rotation: model.rotation.toArray(),
-          scale: model.scale.toArray()
-        };
-        
-        exhibitData.models.push(modelData);
-        
-        // Add model file to zip
-        if (model.userData.fileData) {
-          const fileData = await model.userData.fileData.arrayBuffer();
-          zip.file(model.userData.filename, fileData);
-        }
-      }
-      
-      // Add exhibit configuration
-      zip.file('exhibit.json', JSON.stringify(exhibitData, null, 2));
-      
-      // Generate and download zip
-      const content = await zip.generateAsync({ type: 'blob' });
-      const url = URL.createObjectURL(content);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'exhibit_' + Date.now() + '.zip';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      
-      showStatus('Exhibit saved! Remember your position in the room.');
-    }
-
-    function handleLoadSelect(event) {
-      if (event.target.files.length > 0) {
-        const file = event.target.files[0];
-        loadExhibit(file);
-      }
-    }
-
-    async function loadExhibit(file) {
-      showStatus('Loading exhibit...');
-      
-      try {
-        const zip = new JSZip();
-        const zipContent = await zip.loadAsync(file);
-        
-        // Load exhibit configuration
-        const exhibitFile = zipContent.file('exhibit.json');
-        if (!exhibitFile) {
-          showStatus('Invalid exhibit file!', true);
-          return;
-        }
-        
-        const exhibitData = JSON.parse(await exhibitFile.async('text'));
-        
-        // Clear existing models
-        models.forEach(model => {
-          scene.remove(model);
-          model.traverse((child) => {
-            if (child.geometry) child.geometry.dispose();
-            if (child.material) {
-              if (Array.isArray(child.material)) {
-                child.material.forEach(material => material.dispose());
-              } else {
-                child.material.dispose();
-              }
-            }
-          });
-        });
-        models = [];
-        
-        // Load models
-        let loadedCount = 0;
-        for (const modelData of exhibitData.models) {
-          const modelFile = zipContent.file(modelData.filename);
-          if (modelFile) {
-            const fileData = await modelFile.async('arraybuffer');
-            const blob = new Blob([fileData]);
-            const url = URL.createObjectURL(blob);
-            const fileType = modelData.filename.toLowerCase().split('.').pop();
-            
-            if (fileType === 'obj') {
-              const objLoader = new OBJLoader();
-              objLoader.load(url, (object) => {
-                setupLoadedModel(object, modelData);
-                loadedCount++;
-                if (loadedCount === exhibitData.models.length) {
-                  finishLoading(exhibitData);
-                }
-              });
-            } else if (fileType === 'glb' || fileType === 'gltf') {
-              const gltfLoader = new GLTFLoader();
-              gltfLoader.load(url, (gltf) => {
-                setupLoadedModel(gltf.scene, modelData);
-                loadedCount++;
-                if (loadedCount === exhibitData.models.length) {
-                  finishLoading(exhibitData);
-                }
-              });
-            }
-            
-            URL.revokeObjectURL(url);
-          }
-        }
-        
-      } catch (error) {
-        showStatus('Failed to load exhibit!', true);
-      }
-    }
-
-    function setupLoadedModel(object, modelData) {
-      object.userData.isInteractable = true;
-      object.userData.filename = modelData.filename;
-      
-      // Apply saved transform
-      object.position.fromArray(modelData.position);
-      object.rotation.fromArray(modelData.rotation);
-      object.scale.fromArray(modelData.scale);
-      
-      // Store anchored positions
-      object.userData.anchoredPosition = object.position.clone();
-      object.userData.anchoredRotation = object.rotation.clone();
-      object.userData.anchoredScale = object.scale.clone();
-      
-      object.traverse((child) => {
-        if (child.isMesh) {
-          if (!child.material) {
-            child.material = new THREE.MeshStandardMaterial({
-              color: 0x888888,
-              roughness: 0.5,
-              metalness: 0.3
-            });
-          }
-          
-          // Important for AR rendering
-          child.material.transparent = true;
-          child.castShadow = true;
-          child.receiveShadow = true;
-        }
-      });
-      
-      scene.add(object);
-      models.push(object);
-    }
-
-    function finishLoading(exhibitData) {
-      hasModels = true;
-      updateButtonState();
-      
-      showStatus(`Exhibit loaded! ${models.length} models. Stand at your saved position for correct placement.`);
     }
     
     function render(timestamp, frame) {
